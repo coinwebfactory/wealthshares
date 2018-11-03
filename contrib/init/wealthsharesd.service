@@ -1,0 +1,26 @@
+[Unit]
+Description=WealthShares's distributed currency daemon
+After=network.target
+
+[Service]
+User=wealthshares
+Group=wealthshares
+
+Type=forking
+PIDFile=/var/lib/wealthsharesd/wealthsharesd.pid
+
+ExecStart=/usr/bin/wealthsharesd -daemon -pid=/var/lib/wealthsharesd/wealthsharesd.pid \
+          -conf=/etc/wealthshares/wealthshares.conf -datadir=/var/lib/wealthsharesd
+
+ExecStop=-/usr/bin/wealthshares-cli -conf=/etc/wealthshares/wealthshares.conf \
+         -datadir=/var/lib/wealthsharesd stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
